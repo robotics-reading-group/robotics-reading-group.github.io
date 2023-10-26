@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Replace with your Google Sheet CSV link
-    const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1mzFGnrAVxXgl-67nVLEZ2WCv2U8sHbeMnyPhpwSMZzs/export?format=csv';
+    const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1pj_bHTd7RDTGN4NDmmmD8KTYK-4Nvla5rMgvPJZPpoY/export?format=csv';
 
     fetch(GOOGLE_SHEET_CSV_URL)
     .then(response => response.text())
