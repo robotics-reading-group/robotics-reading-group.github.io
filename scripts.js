@@ -3,32 +3,27 @@ document.addEventListener("DOMContentLoaded", function() {
     const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1pj_bHTd7RDTGN4NDmmmD8KTYK-4Nvla5rMgvPJZPpoY/export?format=csv';
 
     fetch(GOOGLE_SHEET_CSV_URL)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.text();
-    })
+    .then(response => response.text())
     .then(data => {
         const rows = data.split('\n').slice(1); // skip the header row
         let htmlContent = '';
 
         rows.forEach(row => {
-            const columns = row.split('\t');  // Assume CSV is tab-separated
+            const [presenter, title, linkp, year, source, linkm] = row.split(',');
 
             // Ensure that the row has the expected number of columns to avoid errors
-            if (columns.length !== 5) {
+            if ([presenter, title, linkp, year, source, linkm].includes(undefined)) {
                 return;
             }
 
-            const [date, agenda, presenter, source, _] = columns;  // _ is a placeholder for authors
-
             htmlContent += `
                 <tr>
-                    <td>${date.trim()}</td>
-                    <td><a href="${source.trim()}" target="_blank">${agenda.trim()}</a></td>
                     <td>${presenter.trim()}</td>
+                    <td>${title.trim()}</td>
+                    <td><a href="${linkp.trim()}" target="_blank">Link paper</a></td>
+                    <td>${year.trim()}</td>
                     <td>${source.trim()}</td>
+                    <td><a href="${linkm.trim()}" target="_blank">Link meeting</a></td>
                 </tr>
             `;
         });
@@ -36,11 +31,6 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelector('#papersTable tbody').innerHTML = htmlContent; // add the rows to the table
     })
     .catch(error => {
-        console.error('Error:', error.message);
-        // Assuming there's a designated place on your webpage to display errors
-        const errorDisplay = document.createElement('div');
-        errorDisplay.style.color = 'red';
-        errorDisplay.textContent = "An error occurred: " + error.message;
-        document.body.appendChild(errorDisplay); // Append the error message to the body
+        console.error('Error fetching the CSV file:', error);
     });
 });
