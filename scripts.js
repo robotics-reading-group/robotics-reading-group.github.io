@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         rows.forEach(row => {
             // Splitting by tab character since CSV provided is tab-separated
-            const [date, agenda, presenter, source] = row.split('\t');
+            const [date, agenda, presenter, source, _] = row.split('\t');  // _ is a placeholder for authors
 
             // Ensure that the row has the expected number of columns to avoid errors
             if ([date, agenda, presenter, source].includes(undefined)) {
