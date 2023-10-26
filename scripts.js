@@ -3,19 +3,25 @@ document.addEventListener("DOMContentLoaded", function() {
     const GOOGLE_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1pj_bHTd7RDTGN4NDmmmD8KTYK-4Nvla5rMgvPJZPpoY/export?format=csv';
 
     fetch(GOOGLE_SHEET_CSV_URL)
-    .then(response => response.text())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.text();
+    })
     .then(data => {
         const rows = data.split('\n').slice(1); // skip the header row
         let htmlContent = '';
 
         rows.forEach(row => {
-            // Splitting by tab character since CSV provided is tab-separated
-            const [date, agenda, presenter, source, _] = row.split('\t');  // _ is a placeholder for authors
+            const columns = row.split('\t');  // Assume CSV is tab-separated
 
             // Ensure that the row has the expected number of columns to avoid errors
-            if ([date, agenda, presenter, source].includes(undefined)) {
+            if (columns.length !== 5) {
                 return;
             }
+
+            const [date, agenda, presenter, source, _] = columns;  // _ is a placeholder for authors
 
             htmlContent += `
                 <tr>
@@ -30,6 +36,11 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelector('#papersTable tbody').innerHTML = htmlContent; // add the rows to the table
     })
     .catch(error => {
-        console.error('Error fetching the CSV file:', error);
+        console.error('Error:', error.message);
+        // Assuming there's a designated place on your webpage to display errors
+        const errorDisplay = document.createElement('div');
+        errorDisplay.style.color = 'red';
+        errorDisplay.textContent = "An error occurred: " + error.message;
+        document.body.appendChild(errorDisplay); // Append the error message to the body
     });
 });
