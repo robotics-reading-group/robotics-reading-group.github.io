@@ -9,21 +9,21 @@ document.addEventListener("DOMContentLoaded", function() {
         let htmlContent = '';
 
         rows.forEach(row => {
-            const [presenter, title, linkp, year, source, linkm] = row.split(',');
+            // Splitting by tab character since CSV provided is tab-separated
+            const [date, agenda, presenter, source, authors] = row.split('\t');
 
             // Ensure that the row has the expected number of columns to avoid errors
-            if ([presenter, title, linkp, year, source, linkm].includes(undefined)) {
+            if ([date, agenda, presenter, source, authors].includes(undefined)) {
                 return;
             }
 
             htmlContent += `
                 <tr>
+                    <td>${date.trim()}</td>
+                    <td>${agenda.trim()}</td>
                     <td>${presenter.trim()}</td>
-                    <td>${title.trim()}</td>
-                    <td><a href="${linkp.trim()}" target="_blank">Link paper</a></td>
-                    <td>${year.trim()}</td>
                     <td>${source.trim()}</td>
-                    <td><a href="${linkm.trim()}" target="_blank">Link meeting</a></td>
+                    <td>${authors.trim()}</td>
                 </tr>
             `;
         });
